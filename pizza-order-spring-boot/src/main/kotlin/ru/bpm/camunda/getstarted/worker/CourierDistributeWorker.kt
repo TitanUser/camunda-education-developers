@@ -29,5 +29,45 @@ class CourierDistributeWorker(
         const val WORKER = "courierWorker"
         private const val WORKER_TOPIC = "couriers_distribution_topic"
     }
-    //TODO: subscribe to the topic "couriers_distribution_topic"
+
+    @Scheduled(fixedDelay = SCHEDULE_DELAY)
+    fun fetchExternalTask() {
+        val tasks = externalTaskService
+                .fetchAndLock(1, WORKER)
+                .topic(WORKER_TOPIC, timeout + SCHEDULE_DELAY)
+                .execute()
+
+        tasks.forEach(::invokeMethod)
+    }
+
+    fun invokeMethod(task: LockedExternalTask) {
+        try {
+            val address: String = task.getVariables().getValue(V_ADDRESS, String::class.java)
+                    ?: throw Exception("address must not be null")
+            val deliveryBoyName = couriersDistributionService.distributeToCourier(address)
+
+            if (deliveryBoyName.isNotEmpty()) {
+                completeTask(task, mapOf(V_DELIVERYBOYNAME to deliveryBoyName))
+                println("The External Task " + task.id + " has been completed!")
+            }
+        } catch (e: Exception) {
+            handleFailure(task.id, e.message)
+            println("The External Task " + task.id + " failed!")
+        }
+    }
+
+    fun completeTask(task: LockedExternalTask, map: Map<String, Any>) =
+            externalTaskService.complete(task.id, WORKER, map)
+
+    fun handleFailure(id: String, stackTrace: String? = "") {
+        externalTaskService.handleFailure(
+                id,
+                WORKER,
+                "Invoke $WORKER has been failed",
+                stackTrace,
+                0,
+                0
+        )
+    }
+
 }
