@@ -1,0 +1,91 @@
+spring:
+  application:
+    name: pizza-order-sb
+  profiles:
+    active: local
+  security:
+    user:
+      name: admin
+      password: admin
+  banner:
+    location: classpath:banner.txt
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        default_schema: CED_APP
+        show_sql: false
+        use_sql_comments: false
+        format_sql: false
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: true
+        trace: true
+  data:
+    rest:
+      base-path: /repo
+    jpa:
+      repositories:
+        enabled: true
+
+logging:
+  level:
+    root: info
+  file: "./log/${spring.application.name}.log"
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+server:
+  port: 8989
+  use-forward-headers: false
+  servlet:
+    session:
+      timeout: 3600S
+  compression:
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    shutdown:
+      enabled: true
+
+camunda:
+  datasource:
+    jdbcUrl: jdbc:h2:mem:db;DB_CLOSE_ON_EXIT=TRUE;INIT=RUNSCRIPT FROM 'classpath:init.sql'
+    user: test
+    password: test
+    driverClass: org.h2.Driver
+    minPoolSize: 1
+    maxPoolSize: 100
+    acquireIncrement: 1
+    maxIdleTime: 300
+    numHelperThreads: 10
+    maxStatements: 100
+    statementCacheNumDeferredCloseThreads: 1
+    maxAdministrativeTaskTime: 120
+    testConnectionOnCheckin: true
+    testConnectionOnCheckout: false
+    checkoutTimeout: 5000
+    idleConnectionTestPeriod: 300
+  bpm:
+    webapp:
+      index-redirect-enabled: true
+    authorization:
+      enabled: true
+    history-level: full
+    job-execution:
+      corePoolSize: 10
+      maxPoolSize: 200
+    admin-user:
+      id: camunda-admin
+      password: admin
+      firstName: Admin

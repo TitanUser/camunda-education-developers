@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_07t49c0" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.1.2">
+  <bpmn:collaboration id="Collaboration_0iwvzfo">
+    <bpmn:participant id="Request_ingredients" name="Запрос и обработка ингредиентов" processRef="RequestIngredientsProcess" />
+  </bpmn:collaboration>
+  <bpmn:process id="RequestIngredientsProcess" name="Запрос ингредиентов" isExecutable="true" camunda:isStartableInTasklist="false">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>SequenceFlow_0ygqn42</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Task_1w78s4t" name="Ищем поставщиков" camunda:asyncBefore="true" camunda:delegateExpression="${FindSuppliersDelegate}">
+      <bpmn:incoming>SequenceFlow_0ygqn42</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_0acrpkb</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0k4ivqp</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="EndEvent_1fy8kln">
+      <bpmn:incoming>SequenceFlow_0lcb5ze</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0acrpkb" name="Да" sourceRef="ExclusiveGateway_1aaf973" targetRef="Task_1w78s4t" />
+    <bpmn:sequenceFlow id="SequenceFlow_0lcb5ze" name="Нет" sourceRef="ExclusiveGateway_1aaf973" targetRef="EndEvent_1fy8kln">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${nextStep==true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_19e7fjb" sourceRef="Task_0kzx3jm" targetRef="ExclusiveGateway_1aaf973" />
+    <bpmn:sequenceFlow id="SequenceFlow_0k4ivqp" sourceRef="Task_1w78s4t" targetRef="Task_0kzx3jm" />
+    <bpmn:sequenceFlow id="SequenceFlow_0ygqn42" sourceRef="StartEvent_1" targetRef="Task_1w78s4t" />
+    <bpmn:exclusiveGateway id="ExclusiveGateway_1aaf973" name="Нужен дозаказ?" default="SequenceFlow_0acrpkb">
+      <bpmn:incoming>SequenceFlow_19e7fjb</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0lcb5ze</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_0acrpkb</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Task_0kzx3jm" name="Заказ от всех поставщиков" camunda:asyncBefore="true" camunda:candidateGroups="Supplier Processing Group">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="supplier" label="Поставщик" type="string">
+            <camunda:properties>
+              <camunda:property id="readonly" value="true" />
+            </camunda:properties>
+            <camunda:validation>
+              <camunda:constraint name="readonly" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="isCheckedSupplier" label="Хороший поставщик?" type="boolean">
+            <camunda:validation>
+              <camunda:constraint name="required" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+        <camunda:taskListener delegateExpression="${SelectSupliersDelegate}" event="complete" />
+        <camunda:executionListener expression="${true}" event="start">
+          <camunda:field name="isCheckedSupplierLocal">
+            <camunda:expression>${false}</camunda:expression>
+          </camunda:field>
+        </camunda:executionListener>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_0k4ivqp</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_19e7fjb</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics camunda:collection="supplierList" camunda:elementVariable="supplier" />
+    </bpmn:userTask>
+    <bpmn:textAnnotation id="TextAnnotation_1iifrlq">
+      <bpmn:text>Должно вернуться число для будущего распараллеливания</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0663b5q" sourceRef="Task_1w78s4t" targetRef="TextAnnotation_1iifrlq" />
+  </bpmn:process>
+  <bpmn:signal id="Signal_0kz34sz" name="test" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0iwvzfo">
+      <bpmndi:BPMNShape id="Participant_1t3hjx5_di" bpmnElement="Request_ingredients" isHorizontal="true">
+        <dc:Bounds x="156" y="81" width="699" height="387" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="206" y="243" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1tg2ju0_di" bpmnElement="Task_1w78s4t">
+        <dc:Bounds x="276" y="221" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_17x2s9q_di" bpmnElement="Task_0kzx3jm">
+        <dc:Bounds x="448" y="221" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1fy8kln_di" bpmnElement="EndEvent_1fy8kln">
+        <dc:Bounds x="799" y="243" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_1aaf973_di" bpmnElement="ExclusiveGateway_1aaf973" isMarkerVisible="true">
+        <dc:Bounds x="599" y="236" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="584" y="293" width="82" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0acrpkb_di" bpmnElement="SequenceFlow_0acrpkb">
+        <di:waypoint x="624" y="236" />
+        <di:waypoint x="624" y="188" />
+        <di:waypoint x="326" y="188" />
+        <di:waypoint x="326" y="221" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="468" y="170" width="14" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0lcb5ze_di" bpmnElement="SequenceFlow_0lcb5ze">
+        <di:waypoint x="649" y="261" />
+        <di:waypoint x="799" y="261" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="717" y="243" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_19e7fjb_di" bpmnElement="SequenceFlow_19e7fjb">
+        <di:waypoint x="548" y="261" />
+        <di:waypoint x="599" y="261" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0k4ivqp_di" bpmnElement="SequenceFlow_0k4ivqp">
+        <di:waypoint x="376" y="261" />
+        <di:waypoint x="448" y="261" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0ygqn42_di" bpmnElement="SequenceFlow_0ygqn42">
+        <di:waypoint x="242" y="261" />
+        <di:waypoint x="276" y="261" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="TextAnnotation_1iifrlq_di" bpmnElement="TextAnnotation_1iifrlq">
+        <dc:Bounds x="223" y="324" width="157" height="58" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_0663b5q_di" bpmnElement="Association_0663b5q">
+        <di:waypoint x="316" y="301" />
+        <di:waypoint x="310" y="324" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

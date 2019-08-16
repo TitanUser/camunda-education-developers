@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: pizza-order-sb-worker
+    profiles:
+      active: local
+    security:
+      user:
+        name: admin
+        password: admin
+    banner:
+      location: classpath:banner.txt
+
+logging:
+  level:
+    root: info
+  file: "./log/${spring.application.name}.log"
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+server:
+  port: 8990
+  use-forward-headers: false
+  servlet:
+    session:
+      timeout: 3600S
+  compression:
+    enabled: true
+
+bpm:
+  host: http://localhost:8989/rest
+  credentials:
+    authToken: "Basic Y2FtdW5kYS1hZG1pbjphZG1pbg=="
+    user: admin
+    password: admin
+  workers:
+    charity:
+      name: "charityWorker"
+      topics:
+        charity:
+          name: "charity_topic"
+          lockDureation: 5000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    shutdown:
+      enabled: true
