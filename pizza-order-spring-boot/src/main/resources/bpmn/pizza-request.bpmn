@@ -109,11 +109,15 @@
     </bpmn:userTask>
     <bpmn:boundaryEvent id="BoundaryEvent_04t3lcl" name="2 мин" attachedToRef="Task_1gu5ehm">
       <bpmn:outgoing>SequenceFlow_1p8hbli</bpmn:outgoing>
-      <bpmn:timerEventDefinition id="TimerEventDefinition_1a9tk3t" />
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1a9tk3t">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT2M</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
     <bpmn:boundaryEvent id="BoundaryEvent_0489t71" name="1 час" attachedToRef="Task_0jb5q63">
       <bpmn:outgoing>SequenceFlow_08o9wu4</bpmn:outgoing>
-      <bpmn:timerEventDefinition id="TimerEventDefinition_16l6wpm" />
+      <bpmn:timerEventDefinition id="TimerEventDefinition_16l6wpm">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT1H</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
     <bpmn:boundaryEvent id="BoundaryEvent_0oeolwa" name="2 мин" attachedToRef="Task_116t2fu">
       <bpmn:outgoing>SequenceFlow_1qxekk4</bpmn:outgoing>
