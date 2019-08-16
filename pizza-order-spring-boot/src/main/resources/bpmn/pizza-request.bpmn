@@ -129,10 +129,12 @@
     <bpmn:sequenceFlow id="SequenceFlow_1oe78l1" sourceRef="Task_1gu5ehm" targetRef="Task_116t2fu" />
     <bpmn:sequenceFlow id="SequenceFlow_0ttzvx0" sourceRef="Task_1h2qi52" targetRef="Task_116t2fu" />
     <bpmn:sequenceFlow id="SequenceFlow_10tej07" sourceRef="Task_0jb5q63" targetRef="Task_1s96m2o" />
-    <bpmn:sequenceFlow id="SequenceFlow_0zf9jht" name="Да" sourceRef="ExclusiveGateway_0uqwduz" targetRef="Task_1s96m2o" />
+    <bpmn:sequenceFlow id="SequenceFlow_0zf9jht" name="Да" sourceRef="ExclusiveGateway_0uqwduz" targetRef="Task_1s96m2o">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${allIngredientsExists == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_1hoduy9" name="Нет&#10;&#10;" sourceRef="ExclusiveGateway_0uqwduz" targetRef="Task_0jb5q63" />
     <bpmn:sequenceFlow id="SequenceFlow_1qnfarr" name="Клиент отказался" sourceRef="UserTask_0103crx" targetRef="EndEvent_1vt4cgf">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"></bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${requestConfirmed == false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_0cjvd1z" sourceRef="StartEvent_0knli3u" targetRef="UserTask_0103crx" />
     <bpmn:sequenceFlow id="SequenceFlow_08o9wu4" sourceRef="BoundaryEvent_0489t71" targetRef="Task_15h9cg2" />
@@ -201,7 +203,7 @@
       <bpmn:outgoing>SequenceFlow_0wlfk8j</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="SequenceFlow_0vtowon" sourceRef="UserTask_0tfrfhl" targetRef="EndEvent_1vt4cgf">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"></bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${requestConfirmed == false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_1sj3rdg" sourceRef="UserTask_0tfrfhl" targetRef="ExclusiveGateway_0uqwduz" />
     <bpmn:startEvent id="StartEvent_1" name="Заказ на пиццу с сайта или мобильного приложения">
