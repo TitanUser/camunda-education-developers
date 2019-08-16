@@ -26,6 +26,18 @@ class CharityWorker(
     private val log: Logger = LoggerFactory.getLogger(CharityWorker::class.java)
 
     init {
-        //TODO: subscribe to the topic "charity_topic"
+        // subscribe to the topic
+        externalTaskClient.subscribe(charityProperties.topics.charity.name)
+                .lockDuration(charityProperties.topics.charity.lockDuration)
+                .handler { externalTask, externalTaskService ->
+                    try {
+                        charityService.sendMoneytoCharity()
+                        externalTaskService.complete(externalTask)
+                        println("The External Task " + externalTask.id + " has been completed!")
+                    } catch (e: Exception) {
+                        externalTaskService.handleFailure(externalTask, e.message, null, 0, 0)
+                        println("The External Task " + externalTask.id + " failed!")
+                    }
+                }.open()
     }
 }
