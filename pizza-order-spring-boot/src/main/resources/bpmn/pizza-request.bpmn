@@ -227,6 +227,34 @@
     <bpmn:sequenceFlow id="SequenceFlow_0jkqfuh" sourceRef="Task_1c8m605" targetRef="Task_0l50ea2" />
     <bpmn:sequenceFlow id="SequenceFlow_0ol6efo" sourceRef="Task_0l50ea2" targetRef="EndEvent_DeliveryFailed" />
     <bpmn:userTask id="UserTask_0tfrfhl" name="Подтверждение заказа" camunda:candidateGroups="CallCenterGroup">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="pizzaType" label="Тип пиццы" type="enum">
+            <camunda:validation>
+              <camunda:constraint name="required" config="true" />
+            </camunda:validation>
+            <camunda:value id="margarita" name="Маргарита" />
+            <camunda:value id="quattro_fromaggion" name="4 сыра" />
+            <camunda:value id="neapolitana" name="Неаполитана" />
+          </camunda:formField>
+          <camunda:formField id="address" label="Адрес доставки" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="phone" label="Телефон" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="requestConfirmed" label="Заказ подтверждён?" type="boolean">
+            <camunda:validation>
+              <camunda:constraint name="required" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="allIngredientsExists" label="Все ингридиенты в наличии?" type="boolean" />
+        </camunda:formData>
+      </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_1uklme3</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0vtowon</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_1sj3rdg</bpmn:outgoing>
